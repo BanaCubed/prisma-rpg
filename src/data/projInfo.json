@@ -1,27 +1,27 @@
 {
 	"$schema": "./projInfo-schema.json",
 
-	"title": "Profectus",
+	"title": "Prisma RPG",
 	"description": "A project made in Profectus",
-	"id": "",
-	"author": "",
+	"id": "prismaRPG",
+	"author": "BanaCubed",
 	"discordName": "",
 	"discordLink": "",
 
 	"versionNumber": "0.0",
 	"versionTitle": "Initial Commit",
 
-	"allowGoBack": true,
+	"allowGoBack": false,
 	"defaultShowSmall": false,
 	"defaultDecimalsShown": 2,
-	"useHeader": true,
+	"useHeader": false,
 	"banner": null,
 	"logo": "",
 	"initialTabs": [ "main" ],
 
 	"maxTickLength": 3600,
-	"offlineLimit": 1,
-	"enablePausing": true,
+	"offlineLimit": 0,
+	"enablePausing": false,
 	"exportEncoding": "base64",
 	"disableHealthWarning": false
 }

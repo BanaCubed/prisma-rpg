@@ -5,9 +5,9 @@
     <template v-else>
         <div id="modal-root" :style="theme" />
         <div class="app" :style="theme" :class="{ useHeader }">
-            <Nav v-if="useHeader" />
+            <!-- <Nav v-if="useHeader" /> -->
             <Game />
-            <TPS v-if="unref(showTPS)" />
+            <!-- <TPS v-if="unref(showTPS)" /> -->
             <AddictionWarning />
             <GameOverScreen />
             <NaNScreen />

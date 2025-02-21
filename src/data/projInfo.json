@@ -23,5 +23,5 @@
 	"offlineLimit": 0,
 	"enablePausing": false,
 	"exportEncoding": "base64",
-	"disableHealthWarning": false
+	"disableHealthWarning": true
 }

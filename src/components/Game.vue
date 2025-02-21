@@ -27,7 +27,6 @@ import { type Layer, layers } from "game/layers";
 import player from "game/player";
 import { computed, toRef, unref } from "vue";
 import LayerVue from "./Layer.vue";
-import Nav from "./Nav.vue";
 
 const tabs = toRef(player, "tabs");
 const layerKeys = computed(() => Object.keys(layers));
@@ -64,6 +63,7 @@ function gatherLayerProps(layer: Layer) {
     overflow-x: auto;
     overflow-y: hidden;
     display: flex;
+    transition: none;
 }
 
 .tab {

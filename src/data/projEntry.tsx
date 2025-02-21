@@ -3,26 +3,31 @@ import { createLayer } from "game/layers";
 import { persistent } from "game/persistence";
 import { Player } from "game/player";
 import { DecimalSource } from "util/bignum";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import "./styles/common/common.css";
-import "./styles/pc/header.css";
 import Menu from "./tabs/Menu.vue";
-import { TabName } from "./tabs/tabs";
+import { tab, Tabs } from "./tabs/tabs";
+import Options from "./tabs/Options.vue";
+import Header from "./tabs/Header.vue";
+import Map from "./tabs/Map.vue";
+import story from "./utils/story";
 
 /**
  * @hidden
  */
-export const main = createLayer("main", l => {
+export const main = createLayer("main", () => {
     const items = persistent<number[]>([]);
     const gold = persistent<DecimalSource>(0);
-    const storyProgress = persistent<number>(0);
 
-    const tab = ref<TabName>("menu");
-    const fullscreen = ref<boolean>(false);
-
-    l.on("update", () => {
-        fullscreen.value = window.innerHeight === screen.height;
+    const storyProgress = computed<number>(completed => {
+        completed = completed ?? 0;
+        while (story[completed].completed.value === true) {
+            completed++;
+        }
+        return completed;
     });
+
+    const exists = persistent<boolean>(false);
 
     // Note: layers don't _need_ a reference to everything,
     //  but I'd recommend it over trying to remember what does and doesn't need to be included.
@@ -32,62 +37,20 @@ export const main = createLayer("main", l => {
         minimizable: false,
         display: () => (
             <>
-                <div id="prismaHeader">
-                    <h1 style="padding-left: 10px;">Prisma</h1>
-                    <button
-                        aria-label="Home"
-                        id="mainMenuButton"
-                        class="menuButton"
-                        onClick={() => {
-                            tab.value = "menu";
-                        }}
-                    >
-                        <span class="material-icons">home</span>
-                    </button>
-                    <div style="flex-grow: 1;" />
-                    <button
-                        aria-label="Info"
-                        id="infoMenuButton"
-                        class="menuButton"
-                        onClick={() => {
-                            tab.value = "info";
-                        }}
-                    >
-                        <span class="material-icons">info</span>
-                    </button>
-                    <button
-                        aria-label={fullscreen.value ? "Shrink" : "Expand"}
-                        id="fullMenuButton"
-                        class="menuButton"
-                        onClick={() => {
-                            if (window.innerHeight !== screen.height) {
-                                document.body.requestFullscreen().catch();
-                            } else {
-                                document.exitFullscreen().catch();
-                            }
-                        }}
-                    >
-                        <span class="material-icons">
-                            {fullscreen.value ? "fullscreen_exit" : "fullscreen"}
-                        </span>
-                    </button>
-                    <button
-                        aria-label="Options"
-                        id="optsMenuButton"
-                        class="menuButton"
-                        onClick={() => {
-                            tab.value = "options";
-                        }}
-                    >
-                        <span class="material-icons">settings</span>
-                    </button>
-                </div>
-                {tab.value === "menu" ? <Menu /> : null}
+                <Header />
+                {tab.value === Tabs.Home ? (
+                    <Menu />
+                ) : tab.value === Tabs.Options ? (
+                    <Options />
+                ) : tab.value === Tabs.Map ? (
+                    <Map />
+                ) : null}
             </>
         ),
         items,
         gold,
-        tab
+        storyProgress,
+        exists
     };
 });
 

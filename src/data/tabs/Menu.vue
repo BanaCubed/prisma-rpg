@@ -1,27 +1,36 @@
 <template>
-    <h1>
-        title
-        <John />
-    </h1>
+    <div id="container">
+        <div class="box">
+            <h1>
+                Story
+            </h1>
+        </div>
+    </div>
 </template>
 
 <script setup lang="tsx">
-import { render } from 'util/vue';
-import wordShift from 'util/word-shift';
-import { h, ref } from 'vue';
 
-const things = ref(["avocado", "seventeen", "johnson"]);
-
-function constructComponent() {
-    let element = <></>
-    element = <>{element}<p>{Date.now()}</p></>
-    console.log(7)
-    return element
-}
-
-const John = () => render(constructComponent());
 </script>
 
 <style lang="css" scoped>
+#container {
+    display: flex;
+    padding: 10px;
+    flex-wrap: wrap;
+    align-content: center;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-left: -10px;
+}
 
+.box {
+    width: 350px;
+    height: 450px;
+    background: var(--raised-background);
+    border-radius: var(--border-radius);
+    margin: 10px;
+    border: solid 4px rgba(0, 0, 0, 0.125);
+    padding: 10px;
+}
 </style>

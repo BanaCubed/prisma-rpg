@@ -2,13 +2,12 @@ import type { Layer } from "game/layers";
 import { createLayer } from "game/layers";
 import { persistent } from "game/persistence";
 import { Player } from "game/player";
-import Decimal, { DecimalSource, format } from "util/bignum";
+import { DecimalSource } from "util/bignum";
 import { computed, ref } from "vue";
+import "./styles/common/common.css";
+import "./styles/pc/header.css";
 import Menu from "./tabs/Menu.vue";
-import wordShift from "util/word-shift";
-import { createUpgrade } from "features/clickables/upgrade";
-import { createBooleanRequirement } from "game/requirements";
-import { render } from "util/vue";
+import { TabName } from "./tabs/tabs";
 
 /**
  * @hidden
@@ -16,15 +15,14 @@ import { render } from "util/vue";
 export const main = createLayer("main", l => {
     const items = persistent<number[]>([]);
     const gold = persistent<DecimalSource>(0);
+    const storyProgress = persistent<number>(0);
 
-    const tab = ref("menu");
+    const tab = ref<TabName>("menu");
+    const fullscreen = ref<boolean>(false);
 
-    const upg = createUpgrade(() => ({
-        requirements: createBooleanRequirement(() => false),
-        display() {
-            return Date.now().toString()
-        },
-    }));
+    l.on("update", () => {
+        fullscreen.value = window.innerHeight === screen.height;
+    });
 
     // Note: layers don't _need_ a reference to everything,
     //  but I'd recommend it over trying to remember what does and doesn't need to be included.
@@ -34,17 +32,62 @@ export const main = createLayer("main", l => {
         minimizable: false,
         display: () => (
             <>
-                {tab.value === "menu" ? (
-                    <><Menu />{render(upg)}{format(gold.value)}</>
-                ) : (
-                    <>Not Menu</>
-                )}
+                <div id="prismaHeader">
+                    <h1 style="padding-left: 10px;">Prisma</h1>
+                    <button
+                        aria-label="Home"
+                        id="mainMenuButton"
+                        class="menuButton"
+                        onClick={() => {
+                            tab.value = "menu";
+                        }}
+                    >
+                        <span class="material-icons">home</span>
+                    </button>
+                    <div style="flex-grow: 1;" />
+                    <button
+                        aria-label="Info"
+                        id="infoMenuButton"
+                        class="menuButton"
+                        onClick={() => {
+                            tab.value = "info";
+                        }}
+                    >
+                        <span class="material-icons">info</span>
+                    </button>
+                    <button
+                        aria-label={fullscreen.value ? "Shrink" : "Expand"}
+                        id="fullMenuButton"
+                        class="menuButton"
+                        onClick={() => {
+                            if (window.innerHeight !== screen.height) {
+                                document.body.requestFullscreen().catch();
+                            } else {
+                                document.exitFullscreen().catch();
+                            }
+                        }}
+                    >
+                        <span class="material-icons">
+                            {fullscreen.value ? "fullscreen_exit" : "fullscreen"}
+                        </span>
+                    </button>
+                    <button
+                        aria-label="Options"
+                        id="optsMenuButton"
+                        class="menuButton"
+                        onClick={() => {
+                            tab.value = "options";
+                        }}
+                    >
+                        <span class="material-icons">settings</span>
+                    </button>
+                </div>
+                {tab.value === "menu" ? <Menu /> : null}
             </>
         ),
         items,
         gold,
-        tab,
-        upg
+        tab
     };
 });
 

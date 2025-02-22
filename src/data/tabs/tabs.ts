@@ -42,7 +42,30 @@ export interface TabButtonData {
     /**
      * An array of subtabs displayed when the tab is active. Subtabs currently don't support sub-subtabs.
      */
-    subtabs?: TabButtonData[];
+    subtabs?: SubtabButtonData[];
+}
+
+export interface SubtabButtonData {
+    /**
+     * The ID of the subtab to use. Should be taken with consideration of the enum `Subtabs`
+     */
+    tab: Subtabs;
+    /**
+     * The display name of the tab (appears when hovered). Not to be used for comparisons.
+     */
+    name: string;
+    /**
+     * The icon displayed on the tab button. Should be an icon from material icons.
+     */
+    icon: string;
+    /**
+     * A `ComputedRef` representing whether the tab should be visible.
+     */
+    active: ComputedRef<boolean>;
+    /**
+     * The color of the tab button.
+     */
+    color: string;
 }
 
 /**
@@ -105,7 +128,33 @@ export const tabs: TabButtonData[] = [
         name: "Options",
         icon: "settings",
         active: computed(() => main.storyProgress.value >= 1),
-        color: "hsl(0, 0%, 20%)"
+        color: "hsl(0, 0%, 20%)",
+        subtabs: [
+            {
+                // Saves
+                tab: Subtabs.Saves,
+                name: "Saves",
+                icon: "save",
+                active: computed(() => true),
+                color: "hsl(0, 0%, 20%)"
+            },
+            {
+                // Appearance
+                tab: Subtabs.Appearance,
+                name: "Visuals",
+                icon: "palette",
+                active: computed(() => true),
+                color: "hsl(0, 0%, 20%)"
+            },
+            {
+                // Behavior
+                tab: Subtabs.Behavior,
+                name: "Gameplay",
+                icon: "extension",
+                active: computed(() => true),
+                color: "hsl(0, 0%, 20%)"
+            }
+        ]
     },
     {
         // Home
@@ -121,11 +170,12 @@ export const tabs: TabButtonData[] = [
  * A `Ref` representing the current tab.
  */
 export const tab = ref<Tabs>(Tabs.Home);
+export const activeTab = computed(() => tabs.filter(t => t.tab === tab.value)[0]);
 
 /**
  * An incredibly janky `Ref` of an array representing the current subtabs.
  */
-export const subtabs = ref<Record<number, Tabs>>([]);
+export const subtabs = ref<Record<number, Subtabs>>([]);
 tabs.forEach(t => {
     if (t.subtabs === undefined) {
         return;
